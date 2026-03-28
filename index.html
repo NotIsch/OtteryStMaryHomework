@@ -1,19 +1,1263 @@
 <!DOCTYPE html>
-<html>
-<title>OtteryStMaryHomework</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ottery St Mary — Your Guide to Devon's Hidden Gem</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --yellow:     #f5c842;
+  --yellow-dk:  #e0ad1a;
+  --yellow-lt:  #fdf3c0;
+  --yellow-bg:  #fffbee;
+  --cream:      #faf8f2;
+  --stone:      #f0ebe0;
+  --ink:        #1a1612;
+  --ink2:       #3d3730;
+  --muted:      #8a7f72;
+  --border:     #e8e0d0;
+  --border2:    #d4c9b5;
+  --white:      #ffffff;
+  --red:        #d94f3a;
+  --radius:     16px;
+  --radius-lg:  24px;
+  --radius-xl:  36px;
+  --ease:       cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+.nav-outer {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  background: rgba(250, 248, 242, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+}
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.nav-logo .logo-dot {
+  width: 28px; height: 28px;
+  background: var(--yellow);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  transition: transform 0.25s;
+}
+.nav-logo:hover .logo-dot { transform: rotate(12deg); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 999px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--ink); background: var(--stone); }
+.nav-links a.active {
+  color: var(--ink);
+  background: var(--yellow);
+  font-weight: 600;
+}
+.nav-quiz-btn {
+  background: var(--ink);
+  color: var(--yellow) !important;
+  border-radius: 999px !important;
+  padding: 8px 18px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+.nav-quiz-btn:hover { background: var(--ink2) !important; color: var(--yellow) !important; transform: translateY(-1px); }
+.nav-quiz-btn.active { background: var(--ink) !important; color: var(--yellow) !important; }
+
+/* ─── PAGES ─── */
+.page { display: none; min-height: 100vh; padding-top: 62px; }
+.page.active { display: block; }
+#page-home { padding-top: 0; }
+#page-home.active { display: flex; }
+
+/* ─── REVEAL ─── */
+.rv {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.rv.in { opacity: 1; transform: translateY(0); }
+.rv.d1 { transition-delay: 0.09s; }
+.rv.d2 { transition-delay: 0.18s; }
+.rv.d3 { transition-delay: 0.27s; }
+.rv.d4 { transition-delay: 0.36s; }
+
+/* ─── HOME ─── */
+#page-home {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: var(--yellow-bg);
+}
+.home-blobs {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: blobDrift 16s ease-in-out infinite;
+}
+.b1 { width: 600px; height: 600px; background: rgba(245,200,66,0.28); top: -200px; right: -150px; }
+.b2 { width: 400px; height: 400px; background: rgba(245,200,66,0.15); bottom: -100px; left: -100px; animation-delay: -7s; }
+.b3 { width: 280px; height: 280px; background: rgba(217,79,58,0.07); top: 40%; left: 10%; animation-delay: -3s; }
+@keyframes blobDrift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  40%      { transform: translate(15px,-12px) scale(1.04); }
+  70%      { transform: translate(-8px,16px) scale(0.97); }
+}
+
+.home-content {
+  position: relative; z-index: 2;
+  max-width: 820px;
+  padding: 2rem;
+  text-align: center;
+  animation: homeIn 0.85s var(--ease) forwards;
+}
+@keyframes homeIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.home-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 1.5px solid var(--border2);
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2.2rem;
+}
+.eyebrow-chip {
+  background: var(--yellow);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.68rem;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.home-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(3.8rem, 12vw, 8rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+}
+.home-title .sub {
+  display: block;
+  font-size: 0.44em;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  color: var(--ink2);
+  margin-top: 0.25em;
+}
+
+.home-tagline {
+  font-size: 1.1rem;
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 500px;
+  margin: 1.8rem auto 2.8rem;
+  line-height: 1.65;
+}
+
+.home-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+.hpill {
+  background: var(--white);
+  border: 1.5px solid var(--border2);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  color: var(--ink2);
+  font-weight: 400;
+  transition: all 0.22s;
+  cursor: default;
+}
+.hpill:hover { border-color: var(--yellow-dk); background: var(--yellow-lt); }
+
+.home-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 14px 30px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s;
+  border: none;
+  text-decoration: none;
+}
+.home-cta:hover { background: #2e2720; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(26,22,18,0.2); }
+.home-cta .arr { transition: transform 0.25s; }
+.home-cta:hover .arr { transform: translateX(5px); }
+
+.home-strip {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border2);
+}
+.hs-item { text-align: center; }
+.hs-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1;
+}
+.hs-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 3px; }
+
+/* ─── CONTENT WRAP ─── */
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4rem 2.5rem 6rem;
+}
+
+/* ─── HERO BANNER ─── */
+.pg-hero {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+}
+.pg-tag {
+  display: inline-block;
+  background: var(--yellow);
+  border-radius: 8px;
+  padding: 4px 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+.pg-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.pg-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink2);
+}
+.pg-lead {
+  font-size: 1.08rem;
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ─── SECTION TITLE ─── */
+.sec-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 3.5rem 0 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  display: flex; align-items: center; gap: 1.2rem;
+  margin: 3rem 0;
+}
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.divider span {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ─── PROSE ─── */
+.prose { margin: 2rem 0; }
+.prose p {
+  font-size: 1rem;
+  color: var(--ink2);
+  font-weight: 300;
+  line-height: 1.85;
+  margin-bottom: 1.1rem;
+}
+.prose p strong { color: var(--ink); font-weight: 500; }
+
+/* ─── CARDS ─── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 2rem 0; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin: 2rem 0; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin: 2rem 0; }
+@media(max-width:680px){ .g2,.g3,.g4{ grid-template-columns:1fr; } }
+
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.8rem;
+  transition: all 0.3s var(--ease);
+}
+.card:hover {
+  border-color: var(--yellow-dk);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(26,22,18,0.1), 0 0 0 3px rgba(245,200,66,0.15);
+}
+.card-ico {
+  width: 46px; height: 46px;
+  background: var(--yellow-lt);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 1.1rem;
+}
+.card-yr { font-size: 0.68rem; font-weight: 700; letter-spacing: .08em; color: var(--yellow-dk); text-transform: uppercase; margin-bottom: .35rem; }
+.card h3 { font-family:'Fraunces',serif; font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:.4rem; }
+.card p { font-size:.84rem; color:var(--muted); line-height:1.6; }
+
+/* ─── LARGE FEATURE CARD ─── */
+.feat-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s var(--ease);
+}
+.feat-card:hover { border-color: var(--yellow-dk); box-shadow: 0 10px 32px rgba(26,22,18,0.08); }
+.feat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--yellow), var(--yellow-dk));
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+.feat-card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 12px;
+}
+.feat-card p { font-size: 0.95rem; color: var(--ink2); font-weight: 300; line-height: 1.8; }
+
+/* ─── QUOTE ─── */
+.quote-block {
+  border-left: 4px solid var(--yellow);
+  background: var(--yellow-bg);
+  padding: 1.6rem 2rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 2.5rem 0;
+}
+.quote-block blockquote {
+  font-family: 'Fraunces', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.65;
+  margin-bottom: 0.6rem;
+}
+.quote-block cite { font-size: 0.78rem; color: var(--muted); font-style: normal; font-weight: 500; letter-spacing: 0.04em; }
+
+/* ─── SOURCE BOX ─── */
+.source-box {
+  background: #fffdf5;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.2rem;
+  margin: 2.5rem 0;
+  position: relative;
+}
+.src-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--yellow);
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.source-box blockquote {
+  font-size: 0.93rem;
+  line-height: 1.9;
+  color: var(--ink2);
+  font-style: italic;
+  font-weight: 300;
+  margin-bottom: .9rem;
+}
+.src-meta { font-size: .7rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: .7rem; }
+
+/* ─── STATS ─── */
+.stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 2.5rem 0; }
+@media(max-width:560px){ .stat-row{ grid-template-columns:1fr; } }
+.stat-block {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  text-align: center;
+  transition: all .3s;
+}
+.stat-block:hover { border-color: var(--yellow-dk); transform: translateY(-3px); }
+.sbn {
+  font-family: 'Fraunces', serif;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: .4rem;
+}
+.sbn span { color: var(--yellow-dk); }
+.sbl { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+
+/* ─── FEAT LIST ─── */
+.feat-list { display: grid; gap: 1rem; margin: 1.5rem 0; }
+.feat-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 1.2rem;
+  align-items: start;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  transition: all .25s;
+}
+.feat-row:hover { border-color: var(--yellow-dk); background: var(--yellow-bg); }
+.feat-ico {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--yellow-lt);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  transition: transform .25s;
+}
+.feat-row:hover .feat-ico { transform: scale(1.08) rotate(-4deg); }
+.feat-row h4 { font-family:'Fraunces',serif; font-size:.98rem; font-weight:700; color:var(--ink); margin-bottom:.25rem; }
+.feat-row p { font-size:.84rem; color:var(--muted); line-height:1.6; }
+
+/* ─── PERSON ─── */
+.person-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.8rem;
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  gap: 1.4rem;
+  align-items: start;
+  transition: all .3s var(--ease);
+}
+.person-card:hover { border-color: var(--yellow-dk); transform: translateX(6px); box-shadow: -4px 0 0 var(--yellow); }
+.pav {
+  width: 68px; height: 68px;
+  border-radius: var(--radius);
+  background: var(--yellow-lt);
+  border: 2px solid var(--yellow-dk);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.pname { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--ink); margin-bottom:.15rem; }
+.pdates { font-size:.7rem; color:var(--yellow-dk); font-weight:700; letter-spacing:.07em; text-transform:uppercase; margin-bottom:.5rem; }
+.person-card p { font-size:.88rem; color:var(--muted); line-height:1.7; }
+
+/* ─── TIMELINE ─── */
+.timeline { margin: 2rem 0; }
+.tl-item {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 1.2rem;
+  margin-bottom: .9rem;
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: all 0.45s var(--ease);
+}
+.tl-item.vis { opacity:1; transform:translateX(0); }
+.tl-yr {
+  font-family: 'Fraunces', serif;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--yellow-dk);
+  text-align: right;
+  padding-top: .95rem;
+}
+.tl-body {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: .95rem 1.3rem;
+  position: relative;
+  transition: border-color .25s;
+}
+.tl-body:hover { border-color: var(--yellow-dk); }
+.tl-body::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%;
+  transform: translateY(-50%);
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 2.5px solid var(--cream);
+  box-shadow: 0 0 0 2px var(--yellow-dk);
+}
+.tl-body h4 { font-family:'Fraunces',serif; font-size:.9rem; font-weight:700; color:var(--ink); margin-bottom:.2rem; }
+.tl-body p { font-size:.82rem; color:var(--muted); }
+
+/* ─── BOOK CARDS ─── */
+.book-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.6rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  transition: all .3s;
+}
+.book-card:hover { border-color: var(--yellow-dk); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,22,18,.08); }
+.bspine { width: 10px; min-height: 64px; border-radius: 5px; flex-shrink: 0; }
+.by { background: linear-gradient(180deg, #f5c842, #e0ad1a); }
+.bw { background: linear-gradient(180deg, #8ab4c8, #5080a0); }
+.br { background: linear-gradient(180deg, #c8785a, #a05040); }
+.bp { background: linear-gradient(180deg, #9c88cc, #7055aa); }
+.book-card h4 { font-family:'Fraunces',serif; font-size:.95rem; font-weight:700; color:var(--ink); margin-bottom:.15rem; }
+.byear { font-size:.68rem; color:var(--yellow-dk); font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-bottom:.4rem; }
+.book-card p { font-size:.84rem; color:var(--muted); line-height:1.55; }
+
+/* ─── QUIZ ─── */
+.quiz-wrap {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 3rem 3rem 2.5rem;
+  margin-top: 2rem;
+}
+.q-prog-track { height: 6px; background: var(--stone); border-radius:999px; margin-bottom:2.5rem; overflow:hidden; }
+.q-prog-fill  { height:100%; background:linear-gradient(90deg,var(--yellow),var(--yellow-dk)); border-radius:999px; transition:width .5s var(--ease); width:0; }
+
+.qblock { display:none; }
+.qblock.active { display:block; animation: qIn .38s var(--ease) forwards; }
+@keyframes qIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.q-no { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--yellow-dk); margin-bottom:.7rem; }
+.q-txt {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+  margin-bottom: 1.6rem;
+  letter-spacing: -0.01em;
+}
+
+.opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media(max-width:500px){ .opts{ grid-template-columns:1fr; } }
+
+.opt {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: .9rem 1.2rem;
+  font-size: .9rem;
+  color: var(--ink2);
+  cursor: pointer;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  transition: all .2s;
+}
+.opt:hover:not(:disabled) { border-color: var(--yellow-dk); background: var(--yellow-lt); color: var(--ink); transform: translateY(-1px); }
+.opt.correct { border-color: #4a9e6a; background: #eaf7ee; color: #2d6b46; font-weight: 500; }
+.opt.wrong   { border-color: var(--red); background: #fdf0ee; color: #a83224; }
+
+.qfb { margin-top:.9rem; font-size:.86rem; min-height:1.3rem; color:var(--muted); font-style:italic; }
+
+.quiz-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--border);
+}
+.qdots { display:flex; gap:7px; }
+.qdot { width:9px; height:9px; border-radius:50%; background:var(--border2); transition:all .25s; }
+.qdot.done { background:var(--yellow-dk); }
+.qdot.cur  { background:var(--ink); transform:scale(1.35); }
+
+.next-btn {
+  background: var(--ink);
+  color: var(--yellow);
+  border: none;
+  border-radius: 999px;
+  padding: 11px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .22s;
+  display: flex; align-items: center; gap: 7px;
+}
+.next-btn:hover { background: #2e2720; transform: translateY(-1px); }
+.next-btn:disabled { opacity: .3; cursor: not-allowed; transform: none; }
+
+.quiz-result { display:none; text-align:center; padding:1.5rem 0; }
+.r-score-wrap {
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: var(--yellow-lt);
+  border: 3px solid var(--yellow-dk);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.8rem;
+}
+.r-score {
+  font-family: 'Fraunces', serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--ink);
+}
+.r-head { font-family:'Fraunces',serif; font-size:1.6rem; font-weight:700; color:var(--ink); margin-bottom:.5rem; }
+.r-msg { font-size:.9rem; color:var(--muted); margin-bottom:1.8rem; }
+.retry-btn {
+  background: transparent;
+  border: 1.5px solid var(--border2);
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all .22s;
+}
+.retry-btn:hover { border-color:var(--yellow-dk); background:var(--yellow-lt); color:var(--ink); }
+
+/* ─── FOOTER ─── */
+.site-footer {
+  background: var(--ink);
+  color: rgba(250,248,242,.5);
+  text-align: center;
+  padding: 2.5rem;
+  font-size: .78rem;
+  letter-spacing: .04em;
+}
+.site-footer strong { color: var(--yellow); font-weight: 500; }
+
+/* Popup Styles */
+.popup-box {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(26,22,18,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  opacity: 1;
+  pointer-events: all;
+  transition: opacity 0.3s;
+}
+
+.popup-content {
+  background: var(--cream);
+  padding: 2rem 2.5rem;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  max-width: 400px;
+  animation: popupIn 0.4s var(--ease);
+}
+
+.popup-content h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.8rem;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+.popup-content p {
+  font-size: 1rem;
+  color: var(--ink2);
+  margin-bottom: 1.5rem;
+}
+
+.popup-content button {
+  background: var(--ink);
+  color: var(--yellow);
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.22s;
+}
+
+.popup-box button:hover {
+  background: var(--ink2);
+  transform: translateY(-2px);
+}
+
+/* Animation */
+@keyframes popupIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+</style>
+</head>
 <body>
 
-<h1>Ottery St Mary Project</h1>
-<h2>Introduction</h2>
-<p>Ottery St Mary is a lovely little town in the heart of devon</p>
-<img src="mapofengland.png" alt="Map Of England, Arrow Pointing to Ottery">
+<!-- NAV -->
+<div class="nav-outer">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="go('home', document.querySelector('.nav-links a'))">
+      <div class="logo-dot">⛪</div>
+      Ottery St Mary
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active" onclick="go('home',this);return false;">Home</a>
+      <a href="#" onclick="go('origins',this);return false;">Origins</a>
+      <a href="#" onclick="go('church',this);return false;">The Church</a>
+      <a href="#" onclick="go('people',this);return false;">People</a>
+      <a href="#" onclick="go('traditions',this);return false;">Traditions</a>
+      <a href="#" onclick="go('literary',this);return false;">Literary</a>
+      <a href="#" class="nav-quiz-btn" onclick="go('quiz',this);return false;">Take the Quiz →</a>
+    </div>
+  </div>
+</div>
 
-<style>
-body {
-  background-image: url('backgroundimage.jpg');
+<!-- Intro Popup -->
+<div id="intro-popup" class="popup-box">
+  <div class="popup-content">
+    <h2>Welcome to My Ottery St Mary Guidebook</h2>
+    <p>
+      This was made over the Easter holiday for my history homework.
+      <br><br>
+      <strong style="display:block; text-align:center; margin-top:12px;">Proudly Made By Lochlan F</strong>
+    </p>
+    <button onclick="closePopup()">Continue →</button>
+  </div>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+  <div class="home-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="home-content">
+    <div class="home-eyebrow">
+      <span class="eyebrow-chip">Est. 963 AD</span>
+      East Devon, England
+    </div>
+    <h1 class="home-title">
+      Ottery St Mary
+      <span class="sub">Devon's Hidden Gem</span>
+    </h1>
+    <p class="home-tagline">A small market town with a big story. Medieval churches, Romantic poets, flaming barrels, and pixie legends — all in one place.</p>
+    <div class="home-pills">
+      <span class="hpill">⛪ Cathedral of the East</span>
+      <span class="hpill">✍️ Birthplace of Coleridge</span>
+      <span class="hpill">🔥 Flaming Tar Barrels</span>
+      <span class="hpill">🧚 Pixie Day</span>
+      <span class="hpill">🏰 1000+ years of history</span>
+    </div>
+    <a href="#" class="home-cta" onclick="go('origins',document.querySelectorAll('.nav-links a')[1]);return false;">
+      Start Exploring <span class="arr">→</span>
+    </a>
+    <div class="home-strip">
+      <div class="hs-item"><div class="hs-num">963</div><div class="hs-lbl">Founded AD</div></div>
+      <div class="hs-item"><div class="hs-num">6</div><div class="hs-lbl">Chapters</div></div>
+      <div class="hs-item"><div class="hs-num">700+</div><div class="hs-lbl">Yrs of stories</div></div>
+      <div class="hs-item"><div class="hs-num">1</div><div class="hs-lbl">Brilliant quiz</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Home Page Footer -->
+<footer class="site-footer">
+  <strong>Ottery St Mary</strong> · A Guidbook for Homework, This website is made by Lochlan with debugging help from Google Gemini and Claude
+</footer>
+
+<!-- ══════════ ORIGINS ══════════ -->
+<div id="page-origins" class="page">
+  <div class="wrap">
+
+    <div class="pg-hero rv">
+      <div class="pg-tag">Chapter I</div>
+      <h1 class="pg-title">Origins &amp; <em>Early History</em></h1>
+      <p class="pg-lead">From a Saxon river valley to the pages of the Domesday Book — the deep roots of a Devon market town that has been here for over a thousand years.</p>
+    </div>
+
+    <div class="prose rv d1">
+      <p>Nestled in the valley of the River Otter in East Devon, Ottery St Mary is one of England's oldest continuously settled communities. The name tells its own story: <strong>"Ottery"</strong> comes from the river itself, while <strong>"St Mary"</strong> reflects the dedication of its great collegiate church. The fuller Latin form, <em>Oteri Sancte Marie</em>, first appears in written records in 1242 — though the settlement is far older.</p>
+    </div>
+
+    <div class="g4 rv d2">
+      <div class="card"><div class="card-ico">📜</div><div class="card-yr">963 AD</div><h3>Saxon Grant</h3><p>King Edgar granted part of the parish to one of his court advisors — the first written record of ownership.</p></div>
+      <div class="card"><div class="card-ico">⚔️</div><div class="card-yr">Pre-1066</div><h3>Norman Roots</h3><p>Edward the Confessor granted the whole parish to the Dean and Chapter of Rouen Cathedral in Normandy.</p></div>
+      <div class="card"><div class="card-ico">📖</div><div class="card-yr">1086</div><h3>Domesday Book</h3><p>The settlement is listed as 'Otri' in William the Conqueror's great national survey of England.</p></div>
+      <div class="card"><div class="card-ico">🏰</div><div class="card-yr">1645</div><h3>Civil War</h3><p>Ottery became a garrison under Sir Thomas Fairfax. Oliver Cromwell is believed to have stayed at Chanters House.</p></div>
+    </div>
+
+    <div class="divider rv"><span>Primary Historical Source</span></div>
+
+    <div class="source-box rv">
+      <div class="src-label">📄 Historic England · Grade I Listing</div>
+      <blockquote>"Consecrated by Bishop Bronescombe in 1260. Altered and added to by Bishop Grandison circa 1330. Mainly Early English. Built like Exeter Cathedral, with 2 towers above transepts. Has nave and aisles and Lady Chapel. Was a Collegiate Church from 1337 to 1545 when it was dissolved."</blockquote>
+      <div class="src-meta">National Heritage List for England · Reference 865/1/1 · First listed 28 April 1952</div>
+    </div>
+
+    <div class="divider rv"><span>1688 · The Glorious Revolution</span></div>
+
+    <div class="prose rv">
+      <p>In <strong>1688</strong>, William of Orange marched from Brixham towards London to claim the English throne from King James II — one of the most pivotal moments in British constitutional history. According to local records, he stopped and dined in Ottery St Mary along the way. For one brief day, this quiet market town found itself at the centre of the nation's story.</p>
+    </div>
+
+    <div class="stat-row rv">
+      <div class="stat-block"><div class="sbn">963</div><div class="sbl">First Saxon record, AD</div></div>
+      <div class="stat-block"><div class="sbn">1086</div><div class="sbl">Domesday Book listing</div></div>
+      <div class="stat-block"><div class="sbn">1250s</div><div class="sbl">Medieval longhouse unearthed by archaeologists</div></div>
+    </div>
+
+  </div>
+  <footer class="site-footer"><strong>Ottery St Mary</strong> · A Historical Guidebook · Chapter I — Origins</footer>
+</div>
+
+<!-- ══════════ CHURCH ══════════ -->
+<div id="page-church" class="page">
+  <div class="wrap">
+
+    <div class="pg-hero rv">
+      <div class="pg-tag">Chapter II</div>
+      <h1 class="pg-title">St Mary's <em>Church</em></h1>
+      <p class="pg-lead">Bigger than you'd expect for a market town — and that's the point. Bishop Grandisson built it to rival Exeter Cathedral itself.</p>
+    </div>
+
+    <div class="prose rv d1">
+      <p>At the heart of Ottery St Mary stands a building so grand it has long been known as the <strong>"Cathedral of the East."</strong> St Mary's was rebuilt in <strong>1342</strong> by Bishop John de Grandisson of Exeter, who deliberately modelled it on Exeter Cathedral — twin towers, massive nave, the lot. It was established as a <em>Collegiate Church</em>, housing a college of priests, until Henry VIII dissolved it in 1545. Today it is a <strong>Grade I Listed Building</strong>.</p>
+    </div>
+
+    <div class="quote-block rv d2">
+      <blockquote>"Lying large and low like a tired beast."</blockquote>
+      <cite>— Sir Nikolaus Pevsner, architectural historian</cite>
+    </div>
+
+    <h2 class="sec-title rv">What to Look Out For</h2>
+
+    <div class="feat-list rv">
+      <div class="feat-row"><div class="feat-ico">⏰</div><div><h4>The Astronomical Clock</h4><p>One of England's oldest working mechanical clocks. It follows <em>Ptolemaic cosmology</em> — Earth at the centre of the solar system — a genuinely medieval way of understanding the universe, frozen in brass.</p></div></div>
+      <div class="feat-row"><div class="feat-ico">🐦</div><div><h4>The Weathercock</h4><p>Over 500 years old and widely believed to be the <strong>oldest weathercock in Europe</strong>. Still perched on the tower, still doing its job.</p></div></div>
+      <div class="feat-row"><div class="feat-ico">🏛️</div><div><h4>The Dorset Aisle</h4><p>A breathtaking fan-vaulted aisle commissioned around 1520 by Cecily Bonville, Baroness Harington. Pendant bosses, elaborate stonework — the finest Perpendicular Gothic vaulting in the West Country.</p></div></div>
+      <div class="feat-row"><div class="feat-ico">🎭</div><div><h4>The Misericords</h4><p>Ten carved wooden misericords survive from the original 1350 construction. Five of them bear the personal arms of Bishop Grandisson himself — carved signatures in oak.</p></div></div>
+      <div class="feat-row"><div class="feat-ico">🎵</div><div><h4>The Minstrel Gallery</h4><p>A rare surviving feature that once housed musicians performing for the college of priests. It's still there, looking down over the nave.</p></div></div>
+    </div>
+
+    <div class="stat-row rv">
+      <div class="stat-block"><div class="sbn">163<span>ft</span></div><div class="sbl">Length of the church</div></div>
+      <div class="stat-block"><div class="sbn">71<span>ft</span></div><div class="sbl">Height of the towers</div></div>
+      <div class="stat-block"><div class="sbn">1342</div><div class="sbl">Year Grandisson rebuilt it</div></div>
+    </div>
+
+  </div>
+  <footer class="site-footer"><strong>Ottery St Mary</strong> · A Historical Guidebook · Chapter II — The Church</footer>
+</div>
+
+<!-- ══════════ PEOPLE ══════════ -->
+<div id="page-people" class="page">
+  <div class="wrap">
+
+    <div class="pg-hero rv">
+      <div class="pg-tag">Chapter III</div>
+      <h1 class="pg-title">Notable <em>People</em></h1>
+      <p class="pg-lead">Bishops, Romantic poets, missionary saints and visiting monarchs — the remarkable figures who called Ottery home, or at least stopped by.</p>
+    </div>
+
+    <div class="person-card rv">
+      <div class="pav">G</div>
+      <div>
+        <div class="pname">Bishop John de Grandisson</div>
+        <div class="pdates">c.1292 – 1369 · Bishop of Exeter</div>
+        <p>The man who remade Ottery St Mary. As Bishop of Exeter, Grandisson rebuilt St Mary's Church in 1342, consciously modelling it on Exeter Cathedral with twin transept towers. He established the Collegiate Church, oversaw the Lady Chapel and chantry chapels, and is credited with the astronomical clock. His carved arms appear on five of the surviving misericords.</p>
+      </div>
+    </div>
+
+    <div class="person-card rv d1">
+      <div class="pav">S</div>
+      <div>
+        <div class="pname">Samuel Taylor Coleridge</div>
+        <div class="pdates">1772 – 1834 · Romantic Poet</div>
+        <p>Born on 21st October 1772 in the vicarage of St Mary's Church, Coleridge is Ottery's most celebrated son — tenth child of the Reverend John Coleridge, vicar and schoolmaster. He went on to co-author <em>Lyrical Ballads</em> with Wordsworth (1798), effectively founding English Romanticism, and wrote <em>The Rime of the Ancient Mariner</em>. A plaque inside the church marks his birth.</p>
+      </div>
+    </div>
+
+    <div class="person-card rv d2">
+      <div class="pav">C</div>
+      <div>
+        <div class="pname">Cecily Bonville, Baroness Harington</div>
+        <div class="pdates">c.1460 – 1529 · Noblewoman &amp; Patron</div>
+        <p>As 7th Baroness Harington and wife of the Marquess of Dorset, Cecily commissioned the magnificent <strong>Dorset Aisle</strong> around 1520. Its elaborate fan vaulting remains one of the finest examples of Perpendicular Gothic architecture in the West Country — a lasting monument to her wealth and taste.</p>
+      </div>
+    </div>
+
+    <div class="person-card rv">
+      <div class="pav">P</div>
+      <div>
+        <div class="pname">John Coleridge Patteson</div>
+        <div class="pdates">1827 – 1871 · Missionary Bishop</div>
+        <p>Educated at King's School, Ottery, Patteson became a missionary to the South Sea Islands, founded schools across Melanesia, and learned an astonishing <strong>23 local languages</strong>. He was martyred in 1871 and is now recognised as a saint in the Anglican Communion. A monument to him stands near Fenny Bridges in the parish.</p>
+      </div>
+    </div>
+
+    <div class="person-card rv d1">
+      <div class="pav">W</div>
+      <div>
+        <div class="pname">William of Orange</div>
+        <div class="pdates">1650 – 1702 · King William III of England</div>
+        <p>In 1688 the future King William III passed through Ottery St Mary on his march from Brixham to London during the Glorious Revolution. He stopped for dinner — a brief but remarkable moment placing this sleepy Devon town at the very centre of English constitutional history.</p>
+      </div>
+    </div>
+
+  </div>
+  <footer class="site-footer"><strong>Ottery St Mary</strong> · A Historical Guidebook · Chapter III — People</footer>
+</div>
+
+<!-- ══════════ TRADITIONS ══════════ -->
+<div id="page-traditions" class="page">
+  <div class="wrap">
+
+    <div class="pg-hero rv">
+      <div class="pg-tag">Chapter IV</div>
+      <h1 class="pg-title">Traditions &amp; <em>Folklore</em></h1>
+      <p class="pg-lead">Flaming barrels, captured bell-ringers, and mischievous pixies. Ottery takes its traditions very seriously — and very gleefully.</p>
+    </div>
+
+    <div class="feat-card rv d1">
+      <div class="feat-card-title">🔥 The Flaming Tar Barrels</div>
+      <p>Every <strong>5th November</strong>, the streets of Ottery St Mary are taken over by one of the most extraordinary — and dangerous — traditions in England. Local people carry enormous burning barrels of tar through packed crowds on their bare shoulders. Only Otteregians (born-and-bred locals) are allowed to carry them. The tradition is believed to date to around the time of the Gunpowder Plot in 1605, and Ottery is the <strong>only town in England</strong> where it still takes place. Barrels can weigh up to 30 kg when alight, passed from carrier to carrier as they charge through the streets. Thousands travel from across the country to watch each year — from a safe distance.</p>
+    </div>
+
+    <div class="feat-card rv d2">
+      <div class="feat-card-title">🧚 Pixie Day</div>
+      <p>Each June, Ottery celebrates <strong>Pixie Day</strong> — a cheerful re-enactment of a beloved local legend. The story goes that when a bishop ordered church bells to be brought from Wales, local pixies cast a spell on the monks escorting them, leading them towards the cliffs at Sidmouth. One monk broke the spell by stubbing his toe and crying "God bless my soul!" The bells were saved — but the pixies exacted their revenge. Each year, children dress as pixies, capture the town's bell ringers, and imprison them in <em>Pixies' Parlour</em> until the Vicar arrives to rescue them.</p>
+    </div>
+
+    <div class="divider rv"><span>A Timeline of Key Events</span></div>
+
+    <div class="timeline rv" id="tl">
+      <div class="tl-item"><div class="tl-yr">963 AD</div><div class="tl-body"><h4>Saxon Grant</h4><p>King Edgar grants part of the parish to a court advisor.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1086</div><div class="tl-body"><h4>Domesday Book</h4><p>Ottery listed as 'Otri' in the Conqueror's survey.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1260</div><div class="tl-body"><h4>Church Consecrated</h4><p>St Mary's Church consecrated by Bishop Bronescombe.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1342</div><div class="tl-body"><h4>Grandisson Rebuilds</h4><p>The church rebuilt as a Collegiate Church, modelled on Exeter Cathedral.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1520</div><div class="tl-body"><h4>The Dorset Aisle</h4><p>Cecily Bonville commissions the beautiful fan-vaulted aisle.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1545</div><div class="tl-body"><h4>Dissolution</h4><p>Henry VIII dissolves the college of priests.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">c.1605</div><div class="tl-body"><h4>Tar Barrels Begin</h4><p>The flaming barrel tradition believed to start around the Gunpowder Plot.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1688</div><div class="tl-body"><h4>William of Orange</h4><p>The future King William III dines in Ottery during the Glorious Revolution.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1772</div><div class="tl-body"><h4>Coleridge Born</h4><p>Samuel Taylor Coleridge born in the vicarage on 21st October.</p></div></div>
+      <div class="tl-item"><div class="tl-yr">1850</div><div class="tl-body"><h4>Victorian Restoration</h4><p>William Butterfield undertakes a major restoration of St Mary's Church.</p></div></div>
+    </div>
+
+  </div>
+  <footer class="site-footer"><strong>Ottery St Mary</strong> · A Historical Guidebook · Chapter IV — Traditions</footer>
+</div>
+
+<!-- ══════════ LITERARY ══════════ -->
+<div id="page-literary" class="page">
+  <div class="wrap">
+
+    <div class="pg-hero rv">
+      <div class="pg-tag">Chapter V</div>
+      <h1 class="pg-title">Literary <em>Connections</em></h1>
+      <p class="pg-lead">From Romantic poetry to the wizarding world — Ottery St Mary's outsized influence on English literature.</p>
+    </div>
+
+    <div class="prose rv d1">
+      <p>Few English towns of its size can match Ottery St Mary's literary credentials. Its church, its river, and its eccentric character have inspired Romantic poets, Victorian novelists — and one of the most beloved fantasy series ever written.</p>
+    </div>
+
+    <h2 class="sec-title rv">Samuel Taylor Coleridge (1772–1834)</h2>
+
+    <div class="prose rv">
+      <p>The greatest of Ottery's literary sons grew up in the very vicarage of St Mary's Church, where his father served as both vicar and headmaster. The Devon landscape — its skies, its River Otter, its ancient church — fed the imagination that would produce some of English literature's most visionary and strange poetry.</p>
+      <p>With William Wordsworth, Coleridge published <em>Lyrical Ballads</em> in 1798 — widely regarded as the founding text of the English Romantic movement. His own poem <em>The Rime of the Ancient Mariner</em> remains one of the most reprinted poems in the English language.</p>
+    </div>
+
+    <div class="quote-block rv">
+      <blockquote>"In Xanadu did Kubla Khan / A stately pleasure-dome decree..."</blockquote>
+      <cite>— Samuel Taylor Coleridge, <em>Kubla Khan</em> (1816), written after a dream during his Devon years</cite>
+    </div>
+
+    <div class="divider rv"><span>Works Connected to Ottery</span></div>
+
+    <div class="g2 rv">
+      <div class="book-card"><div class="bspine by"></div><div><h4>Lyrical Ballads</h4><div class="byear">1798 · Coleridge &amp; Wordsworth</div><p>The text that launched English Romanticism. Co-written by Ottery's own son.</p></div></div>
+      <div class="book-card"><div class="bspine bw"></div><div><h4>The Rime of the Ancient Mariner</h4><div class="byear">1798 · S.T. Coleridge</div><p>A masterpiece of guilt and the supernatural sea. Among the most anthologised poems in English.</p></div></div>
+      <div class="book-card"><div class="bspine br"></div><div><h4>Pendennis</h4><div class="byear">1850 · W.M. Thackeray</div><p>Thackeray used Ottery as the model for "Clavering St Mary" — his hero's fictional home village.</p></div></div>
+      <div class="book-card"><div class="bspine bp"></div><div><h4>Harry Potter Series</h4><div class="byear">1997– · J.K. Rowling</div><p>Ottery St Mary becomes "Ottery St Catchpole" — home to the Weasley family in the wizarding world.</p></div></div>
+    </div>
+
+  </div>
+  <footer class="site-footer"><strong>Ottery St Mary</strong> · A Historical Guidebook · Chapter V — Literary Connections</footer>
+</div>
+
+<!-- ══════════ QUIZ ══════════ -->
+<div id="page-quiz" class="page">
+  <div class="wrap">
+
+    <div class="pg-hero rv">
+      <div class="pg-tag">Interactive</div>
+      <h1 class="pg-title">How well do you <em>know your Ottery?</em></h1>
+      <p class="pg-lead">Eight questions on the history of Ottery St Mary. Score 8/8 and earn the title of Honorary Otteregian.</p>
+    </div>
+
+    <div class="quiz-wrap rv">
+      <div class="q-prog-track"><div class="q-prog-fill" id="qprog"></div></div>
+
+      <div class="qblock active" id="q1"><div class="q-no">Question 1 of 8</div><div class="q-txt">In which year does the Domesday Book first record the settlement of Ottery?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q1')">963 AD</button><button class="opt" onclick="ans(this,'correct','q1')">1086</button><button class="opt" onclick="ans(this,'wrong','q1')">1242</button><button class="opt" onclick="ans(this,'wrong','q1')">1337</button></div><div class="qfb" id="fb1"></div></div>
+
+      <div class="qblock" id="q2"><div class="q-no">Question 2 of 8</div><div class="q-txt">Which Bishop of Exeter rebuilt St Mary's Church in 1342?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q2')">Bishop Bronescombe</button><button class="opt" onclick="ans(this,'correct','q2')">Bishop Grandisson</button><button class="opt" onclick="ans(this,'wrong','q2')">Bishop Butterfield</button><button class="opt" onclick="ans(this,'wrong','q2')">Bishop Patteson</button></div><div class="qfb" id="fb2"></div></div>
+
+      <div class="qblock" id="q3"><div class="q-no">Question 3 of 8</div><div class="q-txt">In which year was Samuel Taylor Coleridge born in Ottery St Mary?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q3')">1750</button><button class="opt" onclick="ans(this,'wrong','q3')">1762</button><button class="opt" onclick="ans(this,'correct','q3')">1772</button><button class="opt" onclick="ans(this,'wrong','q3')">1798</button></div><div class="qfb" id="fb3"></div></div>
+
+      <div class="qblock" id="q4"><div class="q-no">Question 4 of 8</div><div class="q-txt">What name does J.K. Rowling give to Ottery St Mary in the Harry Potter books?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q4')">Ottery St Edmund</button><button class="opt" onclick="ans(this,'wrong','q4')">Ottery St Pixie</button><button class="opt" onclick="ans(this,'correct','q4')">Ottery St Catchpole</button><button class="opt" onclick="ans(this,'wrong','q4')">Ottery St Draco</button></div><div class="qfb" id="fb4"></div></div>
+
+      <div class="qblock" id="q5"><div class="q-no">Question 5 of 8</div><div class="q-txt">On which date do the Flaming Tar Barrels take place each year?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q5')">31st October</button><button class="opt" onclick="ans(this,'correct','q5')">5th November</button><button class="opt" onclick="ans(this,'wrong','q5')">24th December</button><button class="opt" onclick="ans(this,'wrong','q5')">1st May</button></div><div class="qfb" id="fb5"></div></div>
+
+      <div class="qblock" id="q6"><div class="q-no">Question 6 of 8</div><div class="q-txt">Which cosmological model does the Astronomical Clock in St Mary's Church follow?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q6')">Copernican — Sun at centre</button><button class="opt" onclick="ans(this,'correct','q6')">Ptolemaic — Earth at centre</button><button class="opt" onclick="ans(this,'wrong','q6')">Newtonian — Gravity based</button><button class="opt" onclick="ans(this,'wrong','q6')">Lunar calendar only</button></div><div class="qfb" id="fb6"></div></div>
+
+      <div class="qblock" id="q7"><div class="q-no">Question 7 of 8</div><div class="q-txt">Which royal figure dined in Ottery during the Glorious Revolution of 1688?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q7')">Charles II</button><button class="opt" onclick="ans(this,'wrong','q7')">James II</button><button class="opt" onclick="ans(this,'correct','q7')">William of Orange</button><button class="opt" onclick="ans(this,'wrong','q7')">Queen Anne</button></div><div class="qfb" id="fb7"></div></div>
+
+      <div class="qblock" id="q8"><div class="q-no">Question 8 of 8</div><div class="q-txt">How many local languages did missionary John Coleridge Patteson learn in Melanesia?</div><div class="opts"><button class="opt" onclick="ans(this,'wrong','q8')">7</button><button class="opt" onclick="ans(this,'wrong','q8')">15</button><button class="opt" onclick="ans(this,'correct','q8')">23</button><button class="opt" onclick="ans(this,'wrong','q8')">31</button></div><div class="qfb" id="fb8"></div></div>
+
+      <div class="quiz-result" id="qres">
+        <div class="r-score-wrap"><div class="r-score" id="rscore">0/8</div></div>
+        <div class="r-head" id="rhead">–</div>
+        <div class="r-msg" id="rmsg">–</div>
+        <button class="retry-btn" onclick="qreset()">Try Again</button>
+      </div>
+
+      <div class="quiz-foot" id="qfoot">
+        <div class="qdots" id="qdots"></div>
+        <button class="next-btn" id="nbtn" onclick="qnext()" disabled>Next <span>→</span></button>
+      </div>
+    </div>
+
+  </div>
+  <footer class="site-footer"><strong>Ottery St Mary</strong> · A Historical Guidebook · Interactive Quiz</footer>
+</div>
+
+<script>
+const Qs=['q1','q2','q3','q4','q5','q6','q7','q8'];
+const FB={
+  q1:{c:'✓ Correct! Ottery appears as "Otri" in the 1086 Domesday Book.',w:'✗ Not quite — the Domesday Book was compiled in 1086.'},
+  q2:{c:'✓ Right! Bishop John de Grandisson was the visionary who rebuilt the church.',w:'✗ Incorrect — it was Bishop John de Grandisson, Bishop of Exeter.'},
+  q3:{c:'✓ Correct! Coleridge was born on 21st October 1772.',w:'✗ Not quite — Coleridge was born in 1772 in the vicarage.'},
+  q4:{c:'✓ Spot on! Ottery St Catchpole is home to the Weasley family.',w:'✗ Incorrect — Rowling named it Ottery St Catchpole.'},
+  q5:{c:'✓ Correct! The barrels roll on Guy Fawkes Night, 5th November.',w:'✗ Incorrect — it\'s always on 5th November.'},
+  q6:{c:'✓ Right! The clock follows Ptolemaic cosmology, with Earth at the centre.',w:'✗ Incorrect — it follows Ptolemaic cosmology (Earth at centre), reflecting medieval understanding.'},
+  q7:{c:'✓ Correct! William of Orange stopped in Ottery on his way to London in 1688.',w:'✗ Incorrect — it was William of Orange, the future King William III.'},
+  q8:{c:'✓ Extraordinary! Patteson learned 23 languages during his mission.',w:'✗ Incorrect — Patteson famously learned 23 local languages in Melanesia.'}
+};
+let qCur=0,qScore=0,qAns=new Array(8).fill(false);
+
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(doReveal,80);
 }
-</style>
 
+function doReveal(){
+  document.querySelectorAll('.page.active .rv').forEach((el,i)=>{
+    setTimeout(()=>el.classList.add('in'),i*60);
+  });
+  document.querySelectorAll('.page.active .tl-item').forEach((el,i)=>{
+    setTimeout(()=>el.classList.add('vis'),200+i*80);
+  });
+}
 
+window.addEventListener('DOMContentLoaded',()=>{ doReveal(); qinit(); });
+
+function qinit(){
+  const d=document.getElementById('qdots');
+  d.innerHTML='';
+  Qs.forEach((_,i)=>{
+    const dot=document.createElement('div');
+    dot.className='qdot'+(i===0?' cur':'');
+    dot.id='dot'+i;
+    d.appendChild(dot);
+  });
+  document.getElementById('qprog').style.width='0%';
+}
+
+function ans(btn,r,qid){
+  const i=Qs.indexOf(qid);
+  if(qAns[i]) return;
+  qAns[i]=true;
+  btn.closest('.opts').querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb'+qid.slice(1));
+  if(r==='correct'){
+    btn.classList.add('correct'); qScore++;
+    fb.textContent=FB[qid].c; fb.style.color='#2d6b46';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent=FB[qid].w; fb.style.color='#a83224';
+    btn.closest('.opts').querySelectorAll('.opt').forEach(b=>{
+      if(b.getAttribute('onclick').includes("'correct'")) b.classList.add('correct');
+    });
+  }
+  document.getElementById('dot'+i).classList.remove('cur');
+  document.getElementById('dot'+i).classList.add('done');
+  document.getElementById('nbtn').disabled=false;
+}
+
+function qnext(){
+  document.getElementById(Qs[qCur]).classList.remove('active');
+  qCur++;
+  document.getElementById('qprog').style.width=((qCur/Qs.length)*100)+'%';
+  if(qCur>=Qs.length){ showRes(); return; }
+  document.getElementById(Qs[qCur]).classList.add('active');
+  document.getElementById('dot'+qCur).classList.add('cur');
+  document.getElementById('nbtn').disabled=true;
+  if(qCur===Qs.length-1) document.getElementById('nbtn').innerHTML='Finish ✓';
+}
+
+function showRes(){
+  document.getElementById('qfoot').style.display='none';
+  Qs.forEach(q=>document.getElementById(q).style.display='none');
+  const r=document.getElementById('qres'); r.style.display='block';
+  document.getElementById('qprog').style.width='100%';
+  document.getElementById('rscore').textContent=qScore+'/8';
+  const T=['Fresh Arrival 👋','Curious Visitor 🧭','Knowledgeable Guest 📖','Keen Historian 🏆','Honorary Otteregian! 🎉'];
+  const M=['Plenty more to discover — have another look at the chapters!','A decent start. A few more chapters and you\'ll be an expert.','Solid knowledge! Almost there — give it another go.','Excellent work! You clearly read the guidebook carefully.','A perfect score. You\'ve earned your place in Ottery\'s history!'];
+  const tier=qScore<=1?0:qScore<=3?1:qScore<=5?2:qScore<=7?3:4;
+  document.getElementById('rhead').textContent=T[tier];
+  document.getElementById('rmsg').textContent=M[tier];
+}
+
+function qreset(){
+  qCur=0; qScore=0; qAns=new Array(8).fill(false);
+  document.getElementById('qfoot').style.display='';
+  document.getElementById('qres').style.display='none';
+  document.getElementById('nbtn').innerHTML='Next <span>→</span>';
+  document.getElementById('nbtn').disabled=true;
+  Qs.forEach(q=>{
+    const b=document.getElementById(q);
+    b.style.display=''; b.classList.remove('active');
+    b.querySelectorAll('.opt').forEach(o=>{ o.disabled=false; o.classList.remove('correct','wrong'); });
+    document.getElementById('fb'+q.slice(1)).textContent='';
+  });
+  document.getElementById(Qs[0]).classList.add('active');
+  qinit();
+}
+
+function closePopup(){
+  const popup = document.getElementById('intro-popup');
+  popup.style.opacity = '0';
+  popup.style.pointerEvents = 'none';
+
+  setTimeout(() => {
+    popup.style.display = 'none';
+  }, 300);
+}
+
+</script>
 </body>
 </html>
